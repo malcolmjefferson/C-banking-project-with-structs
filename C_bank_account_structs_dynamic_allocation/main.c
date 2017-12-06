@@ -12,7 +12,6 @@ typedef struct {
 } BankAccount;
 
 typedef struct {
-	char name[15];
 	char userChoice[20];
 } Person;
 
