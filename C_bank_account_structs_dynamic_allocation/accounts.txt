@@ -1,2 +1,2 @@
-Malcolm Jefferson,14748935,$10000
-Dejanee Perkins,19248576,$150000
+Malcolm Jefferson,14748935,10000
+Dejanee Perkins,19248576,150000
