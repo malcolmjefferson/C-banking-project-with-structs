@@ -1,28 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 //Will allow the user to input an amount of money that they want to add to their bank account
 //Will also allow the user to query for how much money is in their bank account
 //Want to turn into a very very secure banking console app... We'll see how that goes.
 
+//want to start the user at a menu and make them enter their name. Use that to search already created acct. Go from there.
 typedef struct {
 	int balance;
 	int deposit;
+	char name[30];
+	unsigned long acctNum;
 } BankAccount;
-
-typedef struct {
-	char userChoice[20];
-} Person;
 
 void DepositFunc(BankAccount * acct, int * pdeposit);
 void CheckBalance(BankAccount * acct);
+BankAccount * FindUser(BankAccount * acct);
+
+BankAccount * FindUser(BankAccount * acct) {
+	//This is where we will look through the accounts file and find the user and their information
+	//Everytime I find a goddamn parsing algorithm, someone says that its wrong. I'll come back to this later.
+	/* FILE* stream = fopen("accounts.txt","r");
+	char line[1024];
+	while (fgets(line, 1024, stream)) {
+		char *tmp;
+		tmp = strtok (line,",");
+		
+	} */
+}
 
 //Function that will handle deposits
 void DepositFunc(BankAccount * acct, int * pdeposit) {
 	printf("\nEnter the amount that you want to deposit: ");
 	fflush(stdout);
-	scanf_s("%d", pdeposit);
+	scanf("%d", pdeposit);
 	getchar();
 	//works the same as adding to the actual value of balance because *balance is a dereferenced pointer to address
 	//where actual balance variable is stored
@@ -38,46 +51,64 @@ void CheckBalance(BankAccount * acct) {
 }
 
 int main() {
-	//allocate space for BankAccount pointer and Person pointer
+	//allocate space for BankAccount pointer
 	BankAccount * acct = malloc(sizeof(BankAccount));
 	acct->balance = 0;
 	acct->deposit = 0;
-	Person * myperson = malloc(sizeof(Person));
-
+	//char array to hold choice of user in while loop.
+	char userChoice[20];
 	//pointer for deposit, will be used to pass by reference
 	int * pdeposit = &acct->deposit;
+	//ask for user name
+	printf("Enter your name: ");
+	fflush(stdout);
+	fgets(acct->name,sizeof(acct->name),stdin);
+	getchar();
+	fflush(stdout);
 
-	//initial query and deposit
-	printf("Enter the amount that you want to deposit: ");
+	//search file for name. Retrieve balance and acct number
+	BankAccount * acctInfo = FindUser(acct);
+
+	/* //initial query for name
+	printf("Enter your name: ");
 	//flush stdout buffer so no strings bump into each other
 	fflush(stdout);
-	scanf_s("%d", pdeposit);
-	//getchar to capture the newline on the end from pressing the enter key
+	//get the input
+	fgets(acct->name, sizeof(acct->name), stdin);
+	//gets the newline
+	getchar();
+	//using the current time as seed, generate random number for account number
+	srand(time(0)); 
+	acct->acctNum = rand();
+	fflush(stdout);
+	//initial deposit
+	printf("Enter the amount that you want to deposit: ");
+	fflush(stdout);
+	scanf("%d", pdeposit);
 	getchar();
 	acct->balance += acct->deposit;
 	printf("\n%d has been deposited into your account.\n", acct->deposit);
-	fflush(stdout);
+	fflush(stdout); */
 
 	//will run as long as the user doesn't quit
 	while (1)
 	{
-		printf("\nWould you like to make another deposit, check your balance, or quit? ");
+		printf("\nWould you like to make a deposit, check your balance, or quit? ");
 		fflush(stdout);
 		//gets user input from stdin
-		fgets(myperson->userChoice, sizeof(myperson->userChoice), stdin);
+		fgets(userChoice, sizeof(userChoice), stdin);
 		//removes the newline from the end of the string and replaces it with a null character
-		myperson->userChoice[strlen(myperson->userChoice) - 1] = '\0';
+		userChoice[strlen(userChoice) - 1] = '\0';
 		//compares the strings, if eq 0 then they are the same
-		if (strncmp(myperson->userChoice, "make deposit", sizeof(myperson->userChoice)) == 0) {
+		if (strncmp(userChoice, "make deposit", sizeof(userChoice)) == 0) {
 			DepositFunc(acct,pdeposit);
 		}
-		else if (strncmp(myperson->userChoice, "check balance", sizeof(myperson->userChoice)) == 0) {
+		else if (strncmp(userChoice, "check balance", sizeof(userChoice)) == 0) {
 			CheckBalance(acct);
 			printf("\n%d", acct->balance);
 		}
-		else if (strncmp(myperson->userChoice, "quit", sizeof(myperson->userChoice)) == 0) {
+		else if (strncmp(userChoice, "quit", sizeof(userChoice)) == 0) {
 			free(acct);
-			free(myperson);
 			return 0;
 		}
 		else {
